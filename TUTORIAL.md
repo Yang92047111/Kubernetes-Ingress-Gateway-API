@@ -885,4 +885,6 @@ Both approaches solve real problems, and the choice depends on your specific req
 
 ---
 
-*This tutorial is based on practical examples from the k8s-ingress-gateway-api project. For hands-on experience, follow the project's Quick Start guide to deploy both Ingress and Gateway API solutions.*
+## Project Repository
+
+The complete source code and examples for this tutorial can be found in the [Kubernetes-Ingress-Gateway-API GitHub Repository](https://github.com/Yang92047111/Kubernetes-Ingress-Gateway-API).
