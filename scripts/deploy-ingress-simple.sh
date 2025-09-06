@@ -50,7 +50,7 @@ echo "🔍 Ingress status:"
 kubectl get ingress -n routing-experiment -o wide
 
 echo "🔍 Service endpoints:"
-kubectl get endpoints -n routing-experiment
+kubectl get endpointslices -n routing-experiment
 
 echo "🧪 Testing Ingress endpoints:"
 echo "Health: curl http://localhost/healthz"

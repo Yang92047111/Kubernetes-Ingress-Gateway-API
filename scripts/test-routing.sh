@@ -48,10 +48,10 @@ perf_test() {
     success_count=0
     
     for i in {1..10}; do
-        start_time=$(date +%s%N)
+        start_time=$(python3 -c "import time; print(int(time.time() * 1000))")
         if curl -s -f "$url" > /dev/null 2>&1; then
-            end_time=$(date +%s%N)
-            duration=$(( (end_time - start_time) / 1000000 )) # Convert to milliseconds
+            end_time=$(python3 -c "import time; print(int(time.time() * 1000))")
+            duration=$((end_time - start_time)) # Already in milliseconds
             total_time=$((total_time + duration))
             success_count=$((success_count + 1))
         fi
@@ -100,4 +100,4 @@ echo "HTTPRoute status:"
 kubectl get httproute -n routing-experiment -o wide
 echo
 echo "Service endpoints:"
-kubectl get endpoints -n routing-experiment
+kubectl get endpointslices -n routing-experiment

@@ -19,12 +19,12 @@ make test-unit
 # 4. Deploy with Ingress
 make deploy-ingress
 
-# 5. Test the endpoints
-make test-endpoints
-
-# Optional: Install Gateway API and test
+# 5. Install Gateway API, Deploy and test
 make install-gateway
 make deploy-gateway
+
+# 6. Test the endpoints
+make test-endpoints
 ```
 
 ---
