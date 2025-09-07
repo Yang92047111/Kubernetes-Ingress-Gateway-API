@@ -53,6 +53,11 @@ while ! kubectl get deployment ingress-nginx-controller -n ingress-nginx >/dev/n
 done
 
 echo "   Deployment found, waiting for it to be available..."
+
+# Ensure the node has the required label for NGINX ingress
+echo "🏷️  Adding required label to node..."
+kubectl label node routing-exp-control-plane ingress-ready=true --overwrite
+
 kubectl wait --namespace ingress-nginx \
   --for=condition=available deployment/ingress-nginx-controller \
   --timeout=600s

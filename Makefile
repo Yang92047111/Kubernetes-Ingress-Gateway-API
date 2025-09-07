@@ -1,4 +1,4 @@
-.PHONY: help setup build test-unit deploy-ingress deploy-gateway test-routing clean
+.PHONY: help setup build test-unit deploy-ingress deploy-gateway test-routing clean all status logs test-endpoints install-gateway
 
 # Default target
 help:
@@ -6,35 +6,26 @@ help:
 	@echo "=============================================="
 	@echo ""
 	@echo "Available targets:"
-	@echo "  setup           - Create Kind cluster with NGINX (recommended)"
-	@echo "  setup-full      - Create Kind cluster with all controllers"
+	@echo "  setup           - Create Kind cluster with NGINX Ingress"
 	@echo "  build           - Build Go application Docker image"
 	@echo "  build-and-load  - Build and load image into Kind cluster"
 	@echo "  test-unit       - Run Go unit tests"
-	@echo "  deploy-ingress  - Deploy app with Ingress routing (recommended)"
-	@echo "  deploy-ingress-alt - Deploy with Ingress (alternative method)"
+	@echo "  deploy-ingress  - Deploy app with Ingress routing"
 	@echo "  deploy-gateway  - Deploy app with Gateway API routing"
 	@echo "  test-routing    - Test both Ingress and Gateway routing"
 	@echo "  test-endpoints  - Quick test of both Ingress and Gateway"
-	@echo "  install-gateway - Install Gateway API support (if needed)"
+	@echo "  install-gateway - Install Gateway API support"
 	@echo "  clean           - Clean up Kind cluster and Docker images"
-	@echo "  reset           - Clean and setup fresh environment"
-	@echo "  logs            - Show application logs"
 	@echo "  status          - Show cluster and resource status"
+	@echo "  logs            - Show application logs"
 	@echo "  all             - Run complete experiment (setup + deploy + test)"
 	@echo ""
 
-# Setup Kind cluster and install controllers (recommended)
+# Setup Kind cluster and install controllers
 setup:
 	@echo "🚀 Setting up experiment environment..."
 	chmod +x scripts/*.sh
 	./scripts/setup-kind-simple.sh
-
-# Setup Kind cluster with all controllers (may have timing issues)
-setup-full:
-	@echo "🚀 Setting up experiment environment (full)..."
-	chmod +x scripts/*.sh
-	./scripts/setup-kind.sh
 
 # Build Go application
 build:
@@ -52,15 +43,10 @@ test-unit:
 	@echo "🧪 Running Go unit tests..."
 	cd go-app && go test -v ./...
 
-# Deploy with Ingress (recommended)
+# Deploy with Ingress
 deploy-ingress:
 	@echo "🌐 Deploying with Ingress..."
 	./scripts/deploy-ingress-simple.sh
-
-# Deploy with Ingress (alternative with webhook handling)
-deploy-ingress-alt:
-	@echo "🌐 Deploying with Ingress (alternative)..."
-	./scripts/deploy-ingress.sh
 
 # Deploy with Gateway API
 deploy-gateway:
@@ -79,13 +65,8 @@ clean:
 	-docker rmi go-app:latest
 
 # Run complete experiment
-all: setup build-and-load test-unit deploy-ingress deploy-gateway test-routing
+all: setup build-and-load test-unit deploy-ingress install-gateway deploy-gateway test-routing
 	@echo "✅ Complete experiment finished!"
-
-# Individual cleanup targets
-clean-deployments:
-	@echo "🧹 Cleaning up deployments..."
-	-kubectl delete namespace routing-experiment
 
 # Show cluster status
 status:
@@ -115,7 +96,7 @@ test-endpoints:
 	@echo "Testing Gateway (port 8080):"
 	@curl -s http://localhost:8080/healthz | jq . || echo "❌ Gateway not responding"
 
-# Install Gateway API support (run after setup if needed)
+# Install Gateway API support
 install-gateway:
 	@echo "🚪 Installing Envoy Gateway..."
 	kubectl apply -f https://github.com/envoyproxy/gateway/releases/download/v0.6.0/install.yaml

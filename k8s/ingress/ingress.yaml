@@ -4,7 +4,6 @@ metadata:
   name: go-app-ingress
   namespace: routing-experiment
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
 spec:
   ingressClassName: nginx
@@ -12,13 +11,6 @@ spec:
   - host: localhost
     http:
       paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: go-app
-            port:
-              number: 80
       - path: /healthz
         pathType: Exact
         backend:
@@ -28,6 +20,13 @@ spec:
               number: 80
       - path: /version
         pathType: Exact
+        backend:
+          service:
+            name: go-app
+            port:
+              number: 80
+      - path: /
+        pathType: Prefix
         backend:
           service:
             name: go-app
